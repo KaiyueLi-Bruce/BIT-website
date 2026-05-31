@@ -929,6 +929,14 @@ canvas {
   white-space: nowrap;
 }
 
+/* Faint fluorescent glow at night, matching the tetrahedra bloom */
+.dark .doc-label {
+  color: var(--vp-c-text-1);
+  text-shadow:
+    0 0 8px rgba(96, 165, 250, 0.45),
+    0 0 18px rgba(96, 165, 250, 0.28);
+}
+
 /* ── Bulb-phase copy ── */
 .bulb-copy {
   position: absolute;

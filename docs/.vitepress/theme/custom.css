@@ -55,3 +55,19 @@
 .VPSidebarItem.is-active > .item .link .text {
   color: var(--vp-c-brand-1);
 }
+
+/* ── Day ⇄ night circular-reveal transition ─────────────────────────
+   No default cross-fade; the JS in Layout.vue grows the incoming theme as a
+   circle. The new layer always sits on top and fully covers the viewport
+   before teardown, so there's no end-of-transition flash. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 2147483646;
+}
