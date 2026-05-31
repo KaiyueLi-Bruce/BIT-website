@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useData } from 'vitepress'
 import * as THREE from 'three'
 import { LineSegments2 } from 'three/addons/lines/LineSegments2.js'
@@ -53,7 +53,6 @@ let t = 0
 
 let composer: EffectComposer
 let bloomPass: UnrealBloomPass
-let bloomEnabled = false
 
 const PALETTE = [0x1E6FD9, 0x2563EB, 0x3B82F6, 0x6366F1, 0x8B5CF6, 0x0EA5E9]
 
@@ -856,7 +855,9 @@ function render() {
   })
 
   // Dark mode → bloom composer (glow); light mode → plain render (clean lines).
-  if (bloomEnabled) composer.render()
+  // Read the theme live each frame so the glow appears as soon as VitePress
+  // resolves the appearance (no manual refresh needed on first load).
+  if (isDark.value) composer.render()
   else renderer.render(scene, camera)
 }
 
@@ -871,9 +872,6 @@ function onResize() {
   mat.resolution.set(w, h)
   bgMat.resolution.set(w, h)
 }
-
-// Toggle the glow with the site theme.
-watch(isDark, v => { bloomEnabled = v }, { immediate: true })
 
 onMounted(() => {
   // Give the page scroll room to trigger the scatter animation
