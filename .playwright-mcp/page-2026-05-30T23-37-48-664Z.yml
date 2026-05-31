@@ -1,0 +1,330 @@
+- generic [ref=e3]:
+  - link "Skip to content" [ref=e4] [cursor=pointer]:
+    - /url: "#VPContent"
+  - banner:
+    - generic:
+      - generic:
+        - generic:
+          - link "BIT-DOCs" [ref=e6] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e7]: BIT-DOCs
+          - generic [ref=e8]:
+            - navigation "Main Navigation" [ref=e9]:
+              - generic [ref=e10]: Main Navigation
+              - link "主页" [ref=e11] [cursor=pointer]:
+                - /url: /
+                - generic [ref=e12]: 主页
+              - button "摄影摄像" [ref=e14] [cursor=pointer]:
+                - generic [ref=e16]: 摄影摄像
+              - button "后期制作" [ref=e19] [cursor=pointer]:
+                - generic [ref=e21]: 后期制作
+              - button "技术开发" [ref=e24] [cursor=pointer]:
+                - generic [ref=e26]: 技术开发
+            - button "extra navigation" [ref=e29] [cursor=pointer]
+  - button "On this page" [ref=e34] [cursor=pointer]: On this page
+  - generic [ref=e40]:
+    - main [ref=e41]:
+      - generic [ref=e43]:
+        - heading "相机使用 Permalink to \"相机使用\"" [level=1] [ref=e44]:
+          - text: 相机使用
+          - link "Permalink to \"相机使用\"" [ref=e45] [cursor=pointer]:
+            - /url: "#相机使用"
+            - text: "#"
+        - paragraph [ref=e46]: 本文介绍摄影最核心的三个曝光参数，以及常用拍摄模式与对焦方式。掌握这些基础后，绝大多数场景都能拍出正确曝光的照片。
+        - separator [ref=e47]
+        - heading "曝光三角 Permalink to \"曝光三角\"" [level=2] [ref=e48]:
+          - text: 曝光三角
+          - link "Permalink to \"曝光三角\"" [ref=e49] [cursor=pointer]:
+            - /url: "#曝光三角"
+            - text: "#"
+        - paragraph [ref=e50]: 曝光量由三个参数共同决定，改变其中任意一个都会影响画面的亮暗，同时也会带来其他效果上的变化。
+        - heading "ISO（感光度） Permalink to \"ISO（感光度）\"" [level=3] [ref=e51]:
+          - text: ISO（感光度）
+          - link "Permalink to \"ISO（感光度）\"" [ref=e52] [cursor=pointer]:
+            - /url: "#iso-感光度"
+            - text: "#"
+        - paragraph [ref=e53]: ISO 表示感光元件对光线的敏感程度。
+        - list [ref=e54]:
+          - listitem [ref=e55]:
+            - strong [ref=e56]: 数值越低
+            - text: （ISO 100）：噪点少，画质干净，适合光线充足的环境
+          - listitem [ref=e57]:
+            - strong [ref=e58]: 数值越高
+            - text: （ISO 3200+）：进光能力强，但会产生明显颗粒感（噪点）
+        - generic [ref=e59]:
+          - paragraph [ref=e60]: 经验法则
+          - paragraph [ref=e61]:
+            - text: 尽量使用相机的
+            - strong [ref=e62]: 原生最低 ISO
+            - text: （通常是 ISO 100 或 64），只有在快门/光圈无法满足需求时才提高 ISO。有双原生 ISO 的机型，高感时优先跳到高原生点。
+        - generic [ref=e63]:
+          - img [ref=e68]:
+            - generic [ref=e73] [cursor=pointer]: "100"
+            - generic [ref=e75] [cursor=pointer]: "200"
+            - generic [ref=e78] [cursor=pointer]: "400"
+            - generic [ref=e80] [cursor=pointer]: "800"
+            - generic [ref=e83] [cursor=pointer]: "1600"
+            - generic [ref=e85] [cursor=pointer]: "3200"
+            - generic [ref=e88] [cursor=pointer]: "6400"
+            - generic [ref=e148]: "100"
+            - generic [ref=e149]: ISO
+          - paragraph [ref=e150]: 画质纯净，噪点几乎不可见。适合室外晴天等光线充足的场景。
+        - group [ref=e151]:
+          - generic "噪点的形成原理" [ref=e152] [cursor=pointer]
+        - group [ref=e153]:
+          - generic "各 ISO 典型噪点表现" [ref=e154] [cursor=pointer]
+        - group [ref=e155]:
+          - generic "两种噪点的外观区别" [ref=e156] [cursor=pointer]
+        - group [ref=e157]:
+          - generic "双原生 ISO（进阶）" [ref=e158] [cursor=pointer]
+        - group [ref=e159]:
+          - generic "EI（电影机曝光指数）" [ref=e160] [cursor=pointer]
+        - separator [ref=e161]
+        - heading "快门速度 Permalink to \"快门速度\"" [level=3] [ref=e162]:
+          - text: 快门速度
+          - link "Permalink to \"快门速度\"" [ref=e163] [cursor=pointer]:
+            - /url: "#快门速度"
+            - text: "#"
+        - paragraph [ref=e164]: 快门速度决定感光元件暴露在光线下的时长，用秒或分数表示（如 1/500s、2s）。
+        - list [ref=e165]:
+          - listitem [ref=e166]:
+            - strong [ref=e167]: 高速快门
+            - text: （1/500s 以上）：凝固运动瞬间，画面清晰锐利
+          - listitem [ref=e168]:
+            - strong [ref=e169]: 低速快门
+            - text: （1/30s 以下）：运动主体会产生模糊轨迹，有时是创作效果（水流、车流）
+        - generic [ref=e170]:
+          - paragraph [ref=e171]: 手持拍摄的安全快门
+          - paragraph [ref=e172]:
+            - text: 手持相机时，快门速度低于
+            - strong [ref=e173]: 1/焦距
+            - text: 容易产生手抖虚化。 例如使用 50mm 镜头，安全快门约为
+            - strong [ref=e174]: 1/50s
+            - text: 或更快。 开启机身/镜头防抖（IBIS/OIS）可获得 3–5 档补偿。
+        - generic [ref=e175]:
+          - img [ref=e180]:
+            - generic [ref=e185] [cursor=pointer]: "1000"
+            - generic [ref=e188] [cursor=pointer]: "500"
+            - generic [ref=e191] [cursor=pointer]: "250"
+            - generic [ref=e194] [cursor=pointer]: "125"
+            - generic [ref=e197] [cursor=pointer]: "60"
+            - generic [ref=e200] [cursor=pointer]: "30"
+            - generic [ref=e203] [cursor=pointer]: "15"
+            - generic [ref=e206] [cursor=pointer]: "8"
+            - generic [ref=e210]: 1/60
+            - generic [ref=e211]: 秒
+          - paragraph [ref=e212]: 可见运动模糊，曝光接近合理。手持时注意防抖，建议开启 IBIS。
+        - group [ref=e213]:
+          - generic "长曝光" [ref=e214] [cursor=pointer]
+        - group [ref=e215]:
+          - generic "ND 减光镜" [ref=e216] [cursor=pointer]
+        - separator [ref=e217]
+        - heading "光圈（F 值） Permalink to \"光圈（F 值）\"" [level=3] [ref=e218]:
+          - text: 光圈（F 值）
+          - link "Permalink to \"光圈（F 值）\"" [ref=e219] [cursor=pointer]:
+            - /url: "#光圈-f-值"
+            - text: "#"
+        - paragraph [ref=e220]: 光圈控制镜头的进光孔径，以 f 数表示。f 数越小，光圈越大。
+        - list [ref=e221]:
+          - listitem [ref=e222]:
+            - strong [ref=e223]: 大光圈
+            - text: （f/1.4、f/2）：进光多，景深浅，背景虚化明显
+          - listitem [ref=e224]:
+            - strong [ref=e225]: 小光圈
+            - text: （f/8、f/11）：进光少，景深深，全图清晰，适合风景
+        - generic [ref=e226]:
+          - paragraph [ref=e227]: 最佳成像光圈
+          - paragraph [ref=e228]:
+            - text: 大多数镜头在
+            - strong [ref=e229]: f/5.6–f/8
+            - text: 时分辨率和衍射的平衡最优，画质最佳。 大光圈（全开）和极小光圈（f/16 以上）通常画质有所下降。
+        - separator [ref=e230]
+        - heading "三者联动：曝光值（EV） Permalink to \"三者联动：曝光值（EV）\"" [level=3] [ref=e231]:
+          - text: 三者联动：曝光值（EV）
+          - link "Permalink to \"三者联动：曝光值（EV）\"" [ref=e232] [cursor=pointer]:
+            - /url: "#三者联动-曝光值-ev"
+            - text: "#"
+        - paragraph [ref=e233]: 曝光量 = ISO × 快门时间 ÷ f²
+        - paragraph [ref=e234]:
+          - text: 三者有一种等效关系：如果提高一档快门速度（减少进光），可以同时扩大一档光圈或提高一档 ISO 来补偿，最终曝光量不变——这叫
+          - strong [ref=e235]: 等效曝光
+          - text: 。
+        - separator [ref=e236]
+        - heading "拍摄模式 Permalink to \"拍摄模式\"" [level=2] [ref=e237]:
+          - text: 拍摄模式
+          - link "Permalink to \"拍摄模式\"" [ref=e238] [cursor=pointer]:
+            - /url: "#拍摄模式"
+            - text: "#"
+        - paragraph [ref=e239]: 相机转盘上的 M / A / S / P 对应不同的自动化程度。
+        - heading "M — 全手动模式 Permalink to \"M — 全手动模式\"" [level=3] [ref=e240]:
+          - text: M — 全手动模式
+          - link "Permalink to \"M — 全手动模式\"" [ref=e241] [cursor=pointer]:
+            - /url: "#m-—-全手动模式"
+            - text: "#"
+        - paragraph [ref=e242]: ISO、快门、光圈全部手动设定。适合有明确创作意图、需要精确控制的场景（棚拍、长曝光、视频录制）。
+        - heading "A / Av — 光圈优先 Permalink to \"A / Av — 光圈优先\"" [level=3] [ref=e243]:
+          - text: A / Av — 光圈优先
+          - link "Permalink to \"A / Av — 光圈优先\"" [ref=e244] [cursor=pointer]:
+            - /url: "#a-av-—-光圈优先"
+            - text: "#"
+        - paragraph [ref=e245]:
+          - strong [ref=e246]: 你设定光圈
+          - text: ，相机自动选择快门速度以获得正确曝光。
+        - paragraph [ref=e247]: 最常用的模式之一。适合：
+        - list [ref=e248]:
+          - listitem [ref=e249]: 人像（大光圈虚化背景）
+          - listitem [ref=e250]: 风景（小光圈全景清晰）
+          - listitem [ref=e251]: 任何需要控制景深的场景
+        - heading "S / Tv — 快门优先 Permalink to \"S / Tv — 快门优先\"" [level=3] [ref=e252]:
+          - text: S / Tv — 快门优先
+          - link "Permalink to \"S / Tv — 快门优先\"" [ref=e253] [cursor=pointer]:
+            - /url: "#s-tv-—-快门优先"
+            - text: "#"
+        - paragraph [ref=e254]:
+          - strong [ref=e255]: 你设定快门速度
+          - text: ，相机自动选择光圈。适合：
+        - list [ref=e256]:
+          - listitem [ref=e257]: 运动、体育（高速凝固动作）
+          - listitem [ref=e258]: 流水、车轨（低速创意效果）
+        - heading "P — 程序自动 Permalink to \"P — 程序自动\"" [level=3] [ref=e259]:
+          - text: P — 程序自动
+          - link "Permalink to \"P — 程序自动\"" [ref=e260] [cursor=pointer]:
+            - /url: "#p-—-程序自动"
+            - text: "#"
+        - paragraph [ref=e261]: 相机自动选择快门和光圈的组合，你可以拨轮调整这个组合而不改变总曝光量（程序偏移）。适合快速抓拍、不确定参数时使用。
+        - generic [ref=e262]:
+          - paragraph [ref=e263]: ISO 自动（Auto ISO）
+          - paragraph [ref=e264]:
+            - text: 在 M / A / S 模式下开启
+            - strong [ref=e265]: Auto ISO
+            - text: 可以让相机辅助控制总曝光量，同时保留你对快门或光圈的完全控制，是很多新手从 P 模式进阶的第一步。
+        - separator [ref=e266]
+        - heading "对焦模式 Permalink to \"对焦模式\"" [level=2] [ref=e267]:
+          - text: 对焦模式
+          - link "Permalink to \"对焦模式\"" [ref=e268] [cursor=pointer]:
+            - /url: "#对焦模式"
+            - text: "#"
+        - heading "AF-S — 单次自动对焦 Permalink to \"AF-S — 单次自动对焦\"" [level=3] [ref=e269]:
+          - text: AF-S — 单次自动对焦
+          - link "Permalink to \"AF-S — 单次自动对焦\"" [ref=e270] [cursor=pointer]:
+            - /url: "#af-s-—-单次自动对焦"
+            - text: "#"
+        - paragraph [ref=e271]:
+          - text: 半按快门时对焦一次，锁定后不再移动。适合
+          - strong [ref=e272]: 静止主体
+          - text: （建筑、产品、摆拍人像）。
+        - heading "AF-C — 连续自动对焦 Permalink to \"AF-C — 连续自动对焦\"" [level=3] [ref=e273]:
+          - text: AF-C — 连续自动对焦
+          - link "Permalink to \"AF-C — 连续自动对焦\"" [ref=e274] [cursor=pointer]:
+            - /url: "#af-c-—-连续自动对焦"
+            - text: "#"
+        - paragraph [ref=e275]:
+          - text: 持续追踪移动主体，直到按下快门为止。适合
+          - strong [ref=e276]: 运动主体
+          - text: （运动员、鸟类、街拍）。
+        - blockquote [ref=e277]:
+          - paragraph [ref=e278]:
+            - text: 佳能叫
+            - strong [ref=e279]: AI SERVO
+            - text: ，尼康叫
+            - strong [ref=e280]: AF-C
+            - text: ，索尼叫
+            - strong [ref=e281]: AF-C
+            - text: 。
+        - heading "MF — 手动对焦 Permalink to \"MF — 手动对焦\"" [level=3] [ref=e282]:
+          - text: MF — 手动对焦
+          - link "Permalink to \"MF — 手动对焦\"" [ref=e283] [cursor=pointer]:
+            - /url: "#mf-—-手动对焦"
+            - text: "#"
+        - paragraph [ref=e284]: 完全手动转动对焦环。适合：
+        - list [ref=e285]:
+          - listitem [ref=e286]: 微距摄影（AF 容易偏焦）
+          - listitem [ref=e287]: 极低对比度场景（暗光、雾天）
+          - listitem [ref=e288]: 天文摄影（对焦至无穷远）
+        - generic [ref=e289]:
+          - paragraph [ref=e290]: 对焦辅助
+          - paragraph [ref=e291]:
+            - text: 手动对焦时可开启
+            - strong [ref=e292]: 峰值对焦（Focus Peaking）
+            - text: ，对焦清晰的区域会高亮显示轮廓；或放大预览（通常按 MF-Assist 键）精确确认焦点。
+        - separator [ref=e293]
+        - heading "常见场景推荐参数 Permalink to \"常见场景推荐参数\"" [level=2] [ref=e294]:
+          - text: 常见场景推荐参数
+          - link "Permalink to \"常见场景推荐参数\"" [ref=e295] [cursor=pointer]:
+            - /url: "#常见场景推荐参数"
+            - text: "#"
+        - table [ref=e296]:
+          - rowgroup [ref=e297]:
+            - row "场景 ISO 快门 光圈 说明" [ref=e298]:
+              - columnheader "场景" [ref=e299]
+              - columnheader "ISO" [ref=e300]
+              - columnheader "快门" [ref=e301]
+              - columnheader "光圈" [ref=e302]
+              - columnheader "说明" [ref=e303]
+          - rowgroup [ref=e304]:
+            - row "室外晴天人像 100 1/500 f/2.8 背景虚化，注意过曝用 ND 滤镜" [ref=e305]:
+              - cell "室外晴天人像" [ref=e306]
+              - cell "100" [ref=e307]
+              - cell "1/500" [ref=e308]
+              - cell "f/2.8" [ref=e309]
+              - cell "背景虚化，注意过曝用 ND 滤镜" [ref=e310]
+            - row "室外晴天风景 100 1/200 f/8 全景清晰，画质最佳" [ref=e311]:
+              - cell "室外晴天风景" [ref=e312]
+              - cell "100" [ref=e313]
+              - cell "1/200" [ref=e314]
+              - cell "f/8" [ref=e315]
+              - cell "全景清晰，画质最佳" [ref=e316]
+            - row "室内无补光 1600–3200 1/60 f/2.8 容忍噪点，防手抖" [ref=e317]:
+              - cell "室内无补光" [ref=e318]
+              - cell "1600–3200" [ref=e319]
+              - cell "1/60" [ref=e320]
+              - cell "f/2.8" [ref=e321]
+              - cell "容忍噪点，防手抖" [ref=e322]
+            - row "演出/舞台 3200–6400 1/250 f/2.8 需要大光圈镜头" [ref=e323]:
+              - cell "演出/舞台" [ref=e324]
+              - cell "3200–6400" [ref=e325]
+              - cell "1/250" [ref=e326]
+              - cell "f/2.8" [ref=e327]
+              - cell "需要大光圈镜头" [ref=e328]
+            - row "流水/瀑布 100 1/4–2s f/8 需要三脚架" [ref=e329]:
+              - cell "流水/瀑布" [ref=e330]
+              - cell "100" [ref=e331]
+              - cell "1/4–2s" [ref=e332]
+              - cell "f/8" [ref=e333]
+              - cell "需要三脚架" [ref=e334]
+            - row "星轨 1600–3200 15–30s f/2.8 三脚架，快门线/定时器" [ref=e335]:
+              - cell "星轨" [ref=e336]
+              - cell "1600–3200" [ref=e337]
+              - cell "15–30s" [ref=e338]
+              - cell "f/2.8" [ref=e339]
+              - cell "三脚架，快门线/定时器" [ref=e340]
+            - row "室内活动抓拍 800–1600 1/200 f/2 高快门防动糊，大光圈补光" [ref=e341]:
+              - cell "室内活动抓拍" [ref=e342]
+              - cell "800–1600" [ref=e343]
+              - cell "1/200" [ref=e344]
+              - cell "f/2" [ref=e345]
+              - cell "高快门防动糊，大光圈补光" [ref=e346]
+        - separator [ref=e347]
+        - heading "进阶阅读 Permalink to \"进阶阅读\"" [level=2] [ref=e348]:
+          - text: 进阶阅读
+          - link "Permalink to \"进阶阅读\"" [ref=e349] [cursor=pointer]:
+            - /url: "#进阶阅读"
+            - text: "#"
+        - list [ref=e350]:
+          - listitem [ref=e351]:
+            - link "视频照片格式" [ref=e352] [cursor=pointer]:
+              - /url: ./formats.html
+            - text: — 拍摄前先了解输出格式，选 RAW 还是 JPEG
+    - contentinfo
+  - contentinfo [ref=e353]:
+    - generic [ref=e354]:
+      - generic [ref=e355]:
+        - generic [ref=e356]: BCSSA · IT Department
+        - generic [ref=e357]: © 2025 BCSSA. All rights reserved.
+      - generic [ref=e358]:
+        - link "加入我们" [ref=e359] [cursor=pointer]:
+          - /url: "#"
+        - link "GitHub" [ref=e360] [cursor=pointer]:
+          - /url: https://github.com/vuejs/vitepress
+          - img [ref=e361]
+          - text: GitHub

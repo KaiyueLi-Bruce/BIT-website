@@ -14,6 +14,25 @@
           @mousedown="onKnobMouseDown"
           @touchstart.prevent="onKnobTouchStart"
         >
+          <defs>
+            <!-- Dished face: subtle theme-aware dome, highlight toward top-left -->
+            <radialGradient :id="`${uid}-face`" cx="38%" cy="30%" r="80%">
+              <stop offset="0%"   style="stop-color: var(--vp-c-bg)" />
+              <stop offset="58%"  style="stop-color: var(--vp-c-bg-soft)" />
+              <stop offset="100%" style="stop-color: var(--vp-c-bg-mute)" />
+            </radialGradient>
+            <!-- Center cap: gentle dome so it reads as a raised button -->
+            <radialGradient :id="`${uid}-cap`" cx="42%" cy="34%" r="72%">
+              <stop offset="0%"   style="stop-color: var(--vp-c-bg)" />
+              <stop offset="100%" style="stop-color: var(--vp-c-bg-soft)" />
+            </radialGradient>
+            <!-- Soft neutral depth -->
+            <filter :id="`${uid}-shadow`" x="-40%" y="-40%" width="180%" height="180%">
+              <feDropShadow dx="0" dy="2" stdDeviation="3.5"
+                flood-color="rgb(15, 23, 42)" flood-opacity="0.16" />
+            </filter>
+          </defs>
+
           <!-- Track arc background -->
           <circle
             :cx="KC" :cy="KC" :r="TRACK_R"
@@ -25,7 +44,7 @@
             stroke-dashoffset="0"
             :transform="`rotate(225, ${KC}, ${KC})`"
           />
-          <!-- Track arc filled -->
+          <!-- Track arc filled (progress) -->
           <circle
             :cx="KC" :cy="KC" :r="TRACK_R"
             fill="none"
@@ -42,62 +61,78 @@
             <line
               :x1="tickInner(i).x" :y1="tickInner(i).y"
               :x2="tickOuter(i).x" :y2="tickOuter(i).y"
-              :stroke="i === shutterIdx ? 'var(--vp-c-brand-1)' : 'var(--vp-c-divider)'"
+              :stroke="i === nearestMajorIdx ? 'var(--vp-c-brand-1)' : 'var(--vp-c-divider)'"
               stroke-width="2" stroke-linecap="round"
             />
             <text
               :x="tickLabel(i).x" :y="tickLabel(i).y"
               text-anchor="middle" dominant-baseline="middle"
-              :fill="i === shutterIdx ? 'var(--vp-c-brand-1)' : 'var(--vp-c-text-3)'"
-              :font-weight="i === shutterIdx ? '600' : '400'"
+              :fill="i === nearestMajorIdx ? 'var(--vp-c-brand-1)' : 'var(--vp-c-text-3)'"
+              :font-weight="i === nearestMajorIdx ? '600' : '400'"
               font-size="8"
               style="cursor:pointer; user-select:none"
-              @click.stop="setIdx(i)"
+              @click.stop="goToStop(i)"
             >{{ shutterDenoms[i] }}</text>
           </g>
 
-          <!-- Knob body -->
-          <circle
-            :cx="KC" :cy="KC" :r="KNOB_R"
+          <!-- ── Refined dial (theme-aware) ──────────────── -->
+          <!-- Bezel -->
+          <circle :cx="KC" :cy="KC" :r="KNOB_R + 4"
             fill="var(--vp-c-bg-soft)"
-            stroke="var(--vp-c-divider)"
-            stroke-width="1.5"
-            style="cursor:grab"
-          />
-          <!-- Pointer -->
-          <line
-            :x1="KC" :y1="KC"
-            :x2="pointerTip.x" :y2="pointerTip.y"
-            stroke="var(--vp-c-brand-1)"
-            stroke-width="2.5" stroke-linecap="round"
-          />
-          <circle :cx="KC" :cy="KC" r="3" fill="var(--vp-c-brand-1)" />
+            stroke="var(--vp-c-divider)" stroke-width="1"
+            :filter="`url(#${uid}-shadow)`" />
 
-          <!-- Center label -->
+          <!-- Rotating group: grip marks + face + indicator -->
+          <g :transform="`rotate(${knobRotation}, ${KC}, ${KC})`" style="cursor:grab">
+            <line
+              v-for="(k, i) in knurls" :key="i"
+              :x1="k.inner.x" :y1="k.inner.y"
+              :x2="k.outer.x" :y2="k.outer.y"
+              stroke="var(--vp-c-divider)"
+              stroke-width="1"
+              stroke-linecap="round"
+              stroke-opacity="0.7"
+            />
+            <circle :cx="KC" :cy="KC" :r="KNOB_R - 2" :fill="`url(#${uid}-face)`"
+              stroke="var(--vp-c-divider)" stroke-width="1" />
+            <line
+              :x1="indicator.x1" :y1="indicator.y1"
+              :x2="indicator.x2" :y2="indicator.y2"
+              stroke="var(--vp-c-brand-1)"
+              stroke-width="3.5"
+              stroke-linecap="round"
+            />
+          </g>
+
+          <!-- Raised center cap (stays upright) -->
+          <circle :cx="KC" :cy="KC" :r="KNOB_R - 15" :fill="`url(#${uid}-cap)`"
+            stroke="var(--vp-c-divider)" stroke-width="1" />
+
+          <!-- Center readout -->
           <text
-            :x="KC" :y="KC + KNOB_R * 0.30"
+            :x="KC" :y="KC - 3"
             text-anchor="middle" dominant-baseline="middle"
             fill="var(--vp-c-text-1)"
-            font-size="11" font-weight="600"
+            font-size="12" font-weight="700"
             style="user-select:none"
-          >{{ shutterLabels[shutterIdx] }}</text>
+          >{{ displayShutter }}</text>
           <text
-            :x="KC" :y="KC + KNOB_R * 0.30 + 14"
+            :x="KC" :y="KC + 11"
             text-anchor="middle" dominant-baseline="middle"
             fill="var(--vp-c-text-3)"
-            font-size="8.5"
+            font-size="7.5" font-weight="600" letter-spacing="1.5"
             style="user-select:none"
           >秒</text>
         </svg>
       </div>
     </div>
 
-    <p class="shutter-demo__desc">{{ descMap[shutterLabels[shutterIdx]] }}</p>
+    <p class="shutter-demo__desc">{{ descMap[descLabel] }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 
 const W = 640
 const H = 240
@@ -105,28 +140,62 @@ const H = 240
 const canvasEl = ref<HTMLCanvasElement>()
 
 // ── Shutter data ─────────────────────────────────────────
+// Reference labels shown around the dial; the dial itself is stepless.
 const shutterLabels = ['1/1000', '1/500', '1/250', '1/125', '1/60', '1/30', '1/15', '1/8']
 const shutterDenoms = ['1000',   '500',   '250',   '125',   '60',   '30',   '15',   '8']
-const shutterValues = [1/1000,   1/500,   1/250,   1/125,   1/60,   1/30,   1/15,   1/8]
-const shutterIdx    = ref(4)  // default 1/60
+const MAJOR_DENOM   = [1000, 500, 250, 125, 60, 30, 15, 8]
 
-function setIdx(i: number) {
-  shutterIdx.value = i
+// Stepless position along the arc: 0 → 1/1000 (fast), 1 → 1/8 (slow).
+const frac       = ref(0.57)   // ≈ 1/60 to start
+const targetFrac = ref(0.57)
+
+const SHUTTER_MIN = 1 / 1000   // frac 0  (fastest)
+const SHUTTER_MAX = 1 / 8      // frac 1  (slowest)
+const LOG_RANGE   = Math.log2(SHUTTER_MAX / SHUTTER_MIN)   // ≈ 6.97 stops
+
+// Continuous shutter time (seconds) — drives both exposure and motion blur.
+const shutterTime = computed(() => SHUTTER_MIN * Math.pow(2, frac.value * LOG_RANGE))
+
+// Standard 1/3-stop shutter denominators, for a camera-like readout.
+const STD_DENOM = [
+  1000, 800, 640, 500, 400, 320, 250, 200, 160, 125, 100,
+  80, 60, 50, 40, 30, 25, 20, 15, 13, 10, 8,
+]
+function nearestLog(arr: number[], v: number) {
+  let best = arr[0], bd = Infinity
+  for (const s of arr) {
+    const d = Math.abs(Math.log2(s) - Math.log2(v))
+    if (d < bd) { bd = d; best = s }
+  }
+  return best
 }
+const displayShutter = computed(() => `1/${nearestLog(STD_DENOM, 1 / shutterTime.value)}`)
+
+// Nearest major reference stop → description text + highlighted label.
+const nearestMajorIdx = computed(() => {
+  const denom = 1 / shutterTime.value
+  let bi = 0, bd = Infinity
+  for (let i = 0; i < MAJOR_DENOM.length; i++) {
+    const d = Math.abs(Math.log2(MAJOR_DENOM[i]) - Math.log2(denom))
+    if (d < bd) { bd = d; bi = i }
+  }
+  return bi
+})
+const descLabel = computed(() => shutterLabels[nearestMajorIdx.value])
 
 const descMap: Record<string, string> = {
-  '1/1000': '极高速快门，飞碟完全凝固，边缘锐利。夜间曝光严重不足，画面接近全黑。',
-  '1/500':  '高速快门，运动清晰，暗部几乎不可见，需要强补光才能正常曝光。',
-  '1/250':  '轻微运动模糊，曝光仍偏暗，适合光线较好环境中抓拍运动主体。',
-  '1/125':  '运动有轻微拖尾，曝光偏暗，夜间需搭配大光圈或高 ISO 使用。',
-  '1/60':   '可见运动模糊，曝光接近合理。手持时注意防抖，建议开启 IBIS。',
-  '1/30':   '明显运动拖影，夜间曝光基本正常。静止场景清晰，运动主体模糊。',
-  '1/15':   '强烈运动模糊，场景明亮，飞碟轨迹拉长，需三脚架拍摄静止主体。',
-  '1/8':    '极长拖影，飞碟轨迹贯穿画面，场景趋于过曝，适合刻意的创意光绘效果。',
+  '1/1000': '极高速快门，飞碟运动完全凝固、边缘锐利；但进光极少，夜景几乎全黑，需要强补光。',
+  '1/500':  '高速快门，运动清晰，曝光仍明显不足，适合光线充足时凝固快速主体。',
+  '1/250':  '运动基本清晰，开始出现极轻微拖影，曝光偏暗。',
+  '1/125':  '运动出现轻微拖尾，曝光偏暗，夜间需配合大光圈或高 ISO。',
+  '1/60':   '可见运动模糊，曝光接近合理。手持注意防抖，建议开启 IBIS。',
+  '1/30':   '明显运动拖影，夜景曝光基本正常；静止主体仍清晰。',
+  '1/15':   '强烈运动模糊，画面变亮，飞碟拖出明显光带，静物需上三脚架。',
+  '1/8':    '极长拖影，飞碟轨迹贯穿画面，场景趋于过曝，适合刻意的光绘 / 长曝创意。',
 }
 
 // ── Knob geometry ─────────────────────────────────────────
-const KNOB_SIZE = 180
+const KNOB_SIZE = 200      // extra padding so edge labels don't clip
 const KC        = KNOB_SIZE / 2
 const TRACK_R   = 72
 const KNOB_R    = 44
@@ -135,7 +204,7 @@ const TICK_OUT  = TRACK_R + 2
 const LABEL_R   = TRACK_R + 16
 
 const TOTAL_DEG    = 270
-const DEG_PER_STEP = TOTAL_DEG / (shutterLabels.length - 1)  // ≈38.57°
+const DEG_PER_STEP = TOTAL_DEG / (shutterLabels.length - 1)  // ≈ 38.57°
 
 const FULL_CIRC = 2 * Math.PI * TRACK_R
 const ARC_LEN   = (TOTAL_DEG / 360) * FULL_CIRC
@@ -147,14 +216,29 @@ function polar(r: number, angleDeg: number) {
   return { x: KC + r * Math.cos(a), y: KC + r * Math.sin(a) }
 }
 
-const filledArcLen = computed(() =>
-  (shutterIdx.value / (shutterLabels.length - 1)) * ARC_LEN
-)
-const pointerTip = computed(() => polar(KNOB_R - 10, angleForIdx(shutterIdx.value)))
+const filledArcLen = computed(() => frac.value * ARC_LEN)
+const knobRotation = computed(() => frac.value * TOTAL_DEG)
 
 function tickInner(i: number) { return polar(TICK_IN,  angleForIdx(i)) }
 function tickOuter(i: number) { return polar(TICK_OUT, angleForIdx(i)) }
 function tickLabel(i: number) { return polar(LABEL_R,  angleForIdx(i)) }
+
+// Unique suffix so gradient/filter IDs never collide with other demo instances.
+const uid = `sh-${Math.random().toString(36).slice(2, 8)}`
+
+// Subtle grip marks around the rim (rotate with the dial → turning is visible).
+const KNURL_COUNT = 40
+const knurls = Array.from({ length: KNURL_COUNT }, (_, i) => {
+  const ang = (360 / KNURL_COUNT) * i
+  return { inner: polar(KNOB_R - 1, ang), outer: polar(KNOB_R + 2, ang) }
+})
+
+// Brand indicator bar (drawn at 225°, rotated to the active value).
+const indicator = computed(() => {
+  const tip  = polar(KNOB_R - 4,  225)
+  const tail = polar(KNOB_R - 13, 225)
+  return { x1: tip.x, y1: tip.y, x2: tail.x, y2: tail.y }
+})
 
 // ── Knob interaction ─────────────────────────────────────
 function angleFromEvent(e: MouseEvent | Touch, svgEl: SVGElement): number {
@@ -168,29 +252,34 @@ function angleFromEvent(e: MouseEvent | Touch, svgEl: SVGElement): number {
   return deg
 }
 
-function svgAngleToIdx(svgDeg: number): number {
+function svgAngleToFrac(svgDeg: number): number {
   let rel = svgDeg - 225
   if (rel < 0) rel += 360
-  if (rel > TOTAL_DEG) rel = rel > TOTAL_DEG + DEG_PER_STEP / 2 ? 0 : TOTAL_DEG
-  return Math.max(0, Math.min(shutterLabels.length - 1, Math.round(rel / DEG_PER_STEP)))
+  if (rel > TOTAL_DEG) rel = rel > TOTAL_DEG + 45 ? 0 : TOTAL_DEG
+  return Math.max(0, Math.min(1, rel / TOTAL_DEG))
 }
 
 function onKnobMouseDown(e: MouseEvent) {
   const svg = e.currentTarget as SVGElement
-  const onMove = (ev: MouseEvent) => { shutterIdx.value = svgAngleToIdx(angleFromEvent(ev, svg)) }
+  const onMove = (ev: MouseEvent) => { targetFrac.value = svgAngleToFrac(angleFromEvent(ev, svg)) }
   const onUp   = () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp) }
   window.addEventListener('mousemove', onMove)
   window.addEventListener('mouseup', onUp)
-  shutterIdx.value = svgAngleToIdx(angleFromEvent(e, svg))
+  targetFrac.value = svgAngleToFrac(angleFromEvent(e, svg))
 }
 
 function onKnobTouchStart(e: TouchEvent) {
   const svg = e.currentTarget as SVGElement
-  const onMove = (ev: TouchEvent) => { shutterIdx.value = svgAngleToIdx(angleFromEvent(ev.touches[0], svg)) }
+  const onMove = (ev: TouchEvent) => { targetFrac.value = svgAngleToFrac(angleFromEvent(ev.touches[0], svg)) }
   const onEnd  = () => { window.removeEventListener('touchmove', onMove); window.removeEventListener('touchend', onEnd) }
   window.addEventListener('touchmove', onMove, { passive: false })
   window.addEventListener('touchend', onEnd)
-  shutterIdx.value = svgAngleToIdx(angleFromEvent(e.touches[0], svg))
+  targetFrac.value = svgAngleToFrac(angleFromEvent(e.touches[0], svg))
+}
+
+// Click a label → ease smoothly to that stop.
+function goToStop(i: number) {
+  targetFrac.value = i / (shutterLabels.length - 1)
 }
 
 // ── Scene ─────────────────────────────────────────────────
@@ -198,13 +287,14 @@ interface Star { x: number; y: number; r: number; a: number }
 const stars: Star[] = []
 
 // ── UFO ───────────────────────────────────────────────────
-const UFO_SPEED  = 400   // px/s
+const UFO_SPEED  = 700   // px/s — also sets within-exposure blur distance
 const UFO_BASE_Y = H * 0.38
 
 let ufoX   = W * 0.3
 let ufoDir = 1
 
-function drawUFO(ctx: CanvasRenderingContext2D, x: number, y: number, alpha: number) {
+// glowOnly: draw just the luminous parts (used for the motion-blur streak)
+function drawUFO(ctx: CanvasRenderingContext2D, x: number, y: number, alpha: number, glowOnly = false) {
   ctx.save()
   ctx.globalAlpha = Math.max(0, Math.min(1, alpha))
   ctx.translate(x, y)
@@ -218,68 +308,72 @@ function drawUFO(ctx: CanvasRenderingContext2D, x: number, y: number, alpha: num
   ctx.fillStyle = glow
   ctx.fill()
 
-  // Tractor beam
-  ctx.beginPath()
-  ctx.moveTo(-9, 8)
-  ctx.lineTo(-30, 58)
-  ctx.lineTo(30, 58)
-  ctx.lineTo(9, 8)
-  ctx.closePath()
-  const beam = ctx.createLinearGradient(0, 8, 0, 58)
-  beam.addColorStop(0, 'rgba(140, 255, 140, 0.40)')
-  beam.addColorStop(1, 'rgba(140, 255, 140, 0)')
-  ctx.fillStyle = beam
-  ctx.fill()
+  if (!glowOnly) {
+    // Tractor beam
+    ctx.beginPath()
+    ctx.moveTo(-9, 8)
+    ctx.lineTo(-30, 58)
+    ctx.lineTo(30, 58)
+    ctx.lineTo(9, 8)
+    ctx.closePath()
+    const beam = ctx.createLinearGradient(0, 8, 0, 58)
+    beam.addColorStop(0, 'rgba(140, 255, 140, 0.40)')
+    beam.addColorStop(1, 'rgba(140, 255, 140, 0)')
+    ctx.fillStyle = beam
+    ctx.fill()
 
-  // Main body
-  ctx.beginPath()
-  ctx.ellipse(0, 0, 34, 9, 0, 0, Math.PI * 2)
-  ctx.fillStyle = '#8fa4ba'
-  ctx.fill()
+    // Main body
+    ctx.beginPath()
+    ctx.ellipse(0, 0, 34, 9, 0, 0, Math.PI * 2)
+    ctx.fillStyle = '#8fa4ba'
+    ctx.fill()
 
-  // Metallic sheen
-  const sheen = ctx.createLinearGradient(0, -9, 0, 9)
-  sheen.addColorStop(0,   'rgba(220, 240, 255, 0.55)')
-  sheen.addColorStop(0.4, 'rgba(200, 225, 255, 0.10)')
-  sheen.addColorStop(1,   'rgba(0,   10,  30,  0.45)')
-  ctx.beginPath()
-  ctx.ellipse(0, 0, 34, 9, 0, 0, Math.PI * 2)
-  ctx.fillStyle = sheen
-  ctx.fill()
-  ctx.strokeStyle = 'rgba(180, 210, 240, 0.70)'
-  ctx.lineWidth = 1
-  ctx.stroke()
+    // Metallic sheen
+    const sheen = ctx.createLinearGradient(0, -9, 0, 9)
+    sheen.addColorStop(0,   'rgba(220, 240, 255, 0.55)')
+    sheen.addColorStop(0.4, 'rgba(200, 225, 255, 0.10)')
+    sheen.addColorStop(1,   'rgba(0,   10,  30,  0.45)')
+    ctx.beginPath()
+    ctx.ellipse(0, 0, 34, 9, 0, 0, Math.PI * 2)
+    ctx.fillStyle = sheen
+    ctx.fill()
+    ctx.strokeStyle = 'rgba(180, 210, 240, 0.70)'
+    ctx.lineWidth = 1
+    ctx.stroke()
 
-  // Dome
-  ctx.beginPath()
-  ctx.ellipse(0, -2, 14, 12, 0, Math.PI, 0)
-  ctx.fillStyle = 'rgba(130, 205, 255, 0.52)'
-  ctx.fill()
-  ctx.strokeStyle = 'rgba(180, 235, 255, 0.55)'
-  ctx.lineWidth = 0.8
-  ctx.stroke()
+    // Dome
+    ctx.beginPath()
+    ctx.ellipse(0, -2, 14, 12, 0, Math.PI, 0)
+    ctx.fillStyle = 'rgba(130, 205, 255, 0.52)'
+    ctx.fill()
+    ctx.strokeStyle = 'rgba(180, 235, 255, 0.55)'
+    ctx.lineWidth = 0.8
+    ctx.stroke()
 
-  // Dome highlight
-  ctx.beginPath()
-  ctx.ellipse(-3, -8, 5, 3, -0.3, 0, Math.PI * 2)
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.38)'
-  ctx.fill()
+    // Dome highlight
+    ctx.beginPath()
+    ctx.ellipse(-3, -8, 5, 3, -0.3, 0, Math.PI * 2)
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.38)'
+    ctx.fill()
+  }
 
-  // Rim lights
-  const rimColors = ['#3f3', '#ff3', '#3ff', '#f93', '#f33', '#39f']
+  // Rim lights — luminous, so they form the colored streak in the trail.
+  // NOTE: 8-digit #RRGGBBAA hex; the '+ "00"' makes a fully transparent edge.
+  const rimColors = ['#33ff33', '#ffff33', '#33ffff', '#ff9933', '#ff3333', '#3399ff']
+  const lr = glowOnly ? 4 : 5
   rimColors.forEach((color, i) => {
     const angle = (i / rimColors.length) * Math.PI * 2
     const lx    = Math.cos(angle) * 25
     const ly    = Math.sin(angle) * 6.5
-    const lg    = ctx.createRadialGradient(lx, ly, 0, lx, ly, 5)
+    const lg    = ctx.createRadialGradient(lx, ly, 0, lx, ly, lr)
     lg.addColorStop(0, color)
     lg.addColorStop(1, color + '00')
     ctx.beginPath()
-    ctx.arc(lx, ly, 5, 0, Math.PI * 2)
+    ctx.arc(lx, ly, lr, 0, Math.PI * 2)
     ctx.fillStyle = lg
     ctx.fill()
     ctx.beginPath()
-    ctx.arc(lx, ly, 2.2, 0, Math.PI * 2)
+    ctx.arc(lx, ly, glowOnly ? 1.6 : 2.2, 0, Math.PI * 2)
     ctx.fillStyle = color
     ctx.fill()
   })
@@ -287,19 +381,20 @@ function drawUFO(ctx: CanvasRenderingContext2D, x: number, y: number, alpha: num
   ctx.restore()
 }
 
+// ── Exposure ──────────────────────────────────────────────
+const REF_TIME = 1 / 60   // shutter that yields a "neutral" night exposure
+
 // ── Render ────────────────────────────────────────────────
 function renderFrame(ts: number) {
   const canvas = canvasEl.value
   if (!canvas) return
   const ctx = canvas.getContext('2d')!
 
-  // Sky — base color shifts with exposure so changes are unmistakable
-  const expFactor = Math.pow(2, shutterIdx.value - 4)   // 1.0 at default 1/60s
-  const skyBright = Math.max(5, Math.min(80, Math.round(expFactor * 8)))
+  // Fixed deep-night sky — brightness is handled by the exposure overlay below.
   const sky = ctx.createLinearGradient(0, 0, 0, H)
-  sky.addColorStop(0,    `hsl(220,60%,${skyBright}%)`)
-  sky.addColorStop(0.72, `hsl(215,55%,${Math.min(90, skyBright + 4)}%)`)
-  sky.addColorStop(1,    `hsl(210,50%,${Math.min(95, skyBright + 8)}%)`)
+  sky.addColorStop(0,    '#0a1430')
+  sky.addColorStop(0.70, '#13213f')
+  sky.addColorStop(1,    '#1d2f52')
   ctx.fillStyle = sky
   ctx.fillRect(0, 0, W, H)
 
@@ -310,7 +405,7 @@ function renderFrame(ts: number) {
   ctx.fill()
   ctx.beginPath()
   ctx.arc(W * 0.88 + 5, H * 0.14 - 2, 11, 0, Math.PI * 2)
-  ctx.fillStyle = '#07090e'
+  ctx.fillStyle = '#0b1325'
   ctx.fill()
 
   // Stars
@@ -352,40 +447,51 @@ function renderFrame(ts: number) {
   ]
   wins.forEach(([x, y]) => ctx.fillRect(x, y, 4, 3))
 
-  // ① Exposure overlay — applied to background only, before UFO
-  if (expFactor < 1) {
-    ctx.fillStyle = `rgba(0,0,0,${Math.min(0.92, 1 - expFactor)})`
+  // ① Exposure overlay on the BACKGROUND — the unmistakable brightness change.
+  //    expF = how much light reaches the sensor vs. the neutral reference.
+  const expF = shutterTime.value / REF_TIME
+  if (expF < 1) {
+    // Underexposed (fast shutter) → scene goes dark.
+    ctx.fillStyle = `rgba(4, 8, 18, ${Math.min(0.93, 1 - expF)})`
     ctx.fillRect(0, 0, W, H)
-  } else if (expFactor > 1) {
-    ctx.fillStyle = `rgba(230,242,255,${Math.min(0.48, (expFactor - 1) / 9)})`
+  } else if (expF > 1) {
+    // Overexposed (slow shutter) → scene washes toward white.
+    ctx.fillStyle = `rgba(235, 244, 255, ${Math.min(0.52, (expF - 1) / 13)})`
     ctx.fillRect(0, 0, W, H)
   }
 
-  // ② UFO trail + main body — drawn AFTER exposure overlay so they stay visible
-  const shutterTime = shutterValues[shutterIdx.value]
-  const blurDist    = UFO_SPEED * shutterTime
-  const wobble      = Math.sin(ts / 950) * 7
-  const ufoY        = UFO_BASE_Y + wobble
+  // ② UFO motion blur + body — drawn on top (a glowing object stays visible).
+  //    blurDist = how far the UFO travels while the shutter is open.
+  const shutterT = shutterTime.value
+  const blurDist = UFO_SPEED * shutterT
+  const wobble   = Math.sin(ts / 950) * 7
+  const ufoY     = UFO_BASE_Y + wobble
 
-  if (blurDist > 1.5) {
-    const nSamples = Math.max(3, Math.min(32, Math.round(blurDist / 4)))
+  if (blurDist > 2) {
+    const nSamples = Math.max(4, Math.min(48, Math.round(blurDist / 3)))
     for (let s = 0; s < nSamples - 1; s++) {
-      const t  = s / (nSamples - 1)
+      const t  = s / (nSamples - 1)            // 0 = tail, 1 = head
       const bx = ufoX - blurDist * ufoDir * (1 - t)
-      drawUFO(ctx, bx, ufoY, 0.65 * t)
+      drawUFO(ctx, bx, ufoY, 0.18 + 0.32 * t, true)   // glow-only streak
     }
   }
   drawUFO(ctx, ufoX, ufoY, 1.0)
 
   // HUD strip
-  ctx.fillStyle = 'rgba(0,0,0,0.32)'
+  ctx.fillStyle = 'rgba(0,0,0,0.34)'
   ctx.fillRect(0, H - 22, W, 22)
   ctx.font = '11px system-ui, -apple-system, sans-serif'
-  ctx.fillStyle = 'rgba(255,255,255,0.62)'
+  ctx.fillStyle = 'rgba(255,255,255,0.7)'
   ctx.textAlign = 'left'
-  ctx.fillText(`快门  ${shutterLabels[shutterIdx.value]}s`, 14, H - 7)
+  ctx.fillText(`快门  ${displayShutter.value} s`, 14, H - 7)
+  ctx.textAlign = 'center'
+  const evStops = Math.log2(expF)
+  const evTxt = evStops > 0.1 ? `过曝 +${evStops.toFixed(1)} EV`
+              : evStops < -0.1 ? `欠曝 ${evStops.toFixed(1)} EV`
+              : '曝光正常'
+  ctx.fillText(evTxt, W / 2, H - 7)
   ctx.textAlign = 'right'
-  const blurPx = blurDist < 1.5 ? '< 2 px' : `~${Math.round(blurDist)} px`
+  const blurPx = blurDist < 2 ? '< 2 px（凝固）' : `~${Math.round(blurDist)} px`
   ctx.fillText(`运动拖影 ${blurPx}`, W - 14, H - 7)
 }
 
@@ -396,13 +502,19 @@ const FPS    = 30
 
 function loop(ts: number) {
   rafId = requestAnimationFrame(loop)
+
+  // Ease the knob toward its target every frame → smooth stepless motion.
+  const diff = targetFrac.value - frac.value
+  if (Math.abs(diff) > 0.0008) frac.value += diff * 0.18
+  else if (frac.value !== targetFrac.value) frac.value = targetFrac.value
+
   if (ts - lastTime < 1000 / FPS) return
   const dt = Math.min((ts - lastTime) / 1000, 0.05)
   lastTime = ts
 
   ufoX += UFO_SPEED * ufoDir * dt
-  if (ufoX > W * 0.88) ufoDir = -1
-  if (ufoX < W * 0.12) ufoDir =  1
+  if (ufoX > W * 0.86) ufoDir = -1
+  if (ufoX < W * 0.14) ufoDir =  1
 
   renderFrame(ts)
 }
@@ -417,10 +529,6 @@ onMounted(() => {
     })
   }
   rafId = requestAnimationFrame(loop)
-  // Force immediate redraw whenever shutterIdx changes (in case RAF timing is unlucky)
-  watch(shutterIdx, () => {
-    renderFrame(performance.now())
-  })
 })
 
 onUnmounted(() => {
