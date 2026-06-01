@@ -56,6 +56,27 @@
   color: var(--vp-c-brand-1);
 }
 
+/* ── 顶部导航栏常驻 ──────────────────────────────────────────────
+   VitePress 默认只在 ≥960px 固定导航栏；窄窗口（<960px，常见于浏览器
+   非最大化时）下 .VPNav 是 position:relative，会随页面一起滚走。这里
+   统一固定它，并在窄屏补回内容/局部导航所需的顶部偏移，避免被遮挡。 */
+/* 用 #app 前缀提高特异性，盖过 VitePress 的 scoped 规则
+   （.VPNav[data-v-xxx] 特异性为 0,2,0，普通 .VPNav 无法覆盖）。 */
+#app .VPNav {
+  position: fixed;
+}
+
+@media (max-width: 959px) {
+  /* 非首页内容补回导航高度（首页 hero 是 fixed 覆盖层，自带顶部偏移） */
+  #app .VPContent:not(.is-home) {
+    padding-top: var(--vp-nav-height);
+  }
+  /* 局部导航（移动端粘性子栏）下移到固定导航之下，避免与其重叠 */
+  #app .VPLocalNav {
+    top: var(--vp-nav-height);
+  }
+}
+
 /* ── Day ⇄ night circular-reveal transition ─────────────────────────
    The theme toggle is the only thing that uses the View Transitions API
    (page navigation uses the CSS entrance animation below), so these rules
